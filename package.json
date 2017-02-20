@@ -1,0 +1,51 @@
+{
+  "name": "json-reporter",
+  "version": "0.0.1",
+  "description": "Common plugin for gemini and hermione which is intended to aggregate the results of tests running",
+  "main": "gemini.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run lint && npm run test-unit",
+    "test-unit": "mocha test",
+    "cover": "istanbul cover _mocha test",
+    "coveralls": "npm i coveralls && npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
+    "precommit": "npm run lint",
+    "commitmsg": "conventional-changelog-lint -e",
+    "release": "standard-version"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gemini-testing/json-reporter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gemini-testing/json-reporter/issues"
+  },
+  "engines": {
+    "node": ">= 4"
+  },
+  "keywords": [
+    "gemini",
+    "hermione",
+    "plugin",
+    "json-reporter"
+  ],
+  "homepage": "https://github.com/gemini-testing/json-reporter#readme",
+  "author": "Dmitriy Dudkevich",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.4.7",
+    "fs-extra": "^2.0.0",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "conventional-changelog-lint": "^1.0.1",
+    "eslint": "^3.4.0",
+    "eslint-config-gemini-testing": "^2.2.0",
+    "husky": "^0.11.9",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.0.2",
+    "sinon": "^1.17.5",
+    "standard-version": "^4.0.0"
+  }
+}
