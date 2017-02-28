@@ -35,6 +35,7 @@
   "dependencies": {
     "bluebird": "^3.4.7",
     "fs-extra": "^2.0.0",
+    "gemini-configparser": "^0.3.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
@@ -45,6 +46,7 @@
     "husky": "^0.11.9",
     "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
+    "proxyquire": "^1.7.11",
     "sinon": "^1.17.5",
     "standard-version": "^4.0.0"
   }
