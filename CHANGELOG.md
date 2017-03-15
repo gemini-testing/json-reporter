@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.1.1"></a>
+## [0.1.1](https://github.com/gemini-testing/json-reporter/compare/v0.1.0...v0.1.1) (2017-03-15)
+
+
+### Bug Fixes
+
+* not throw error when configure result if test parent is not defined ([f8180c6](https://github.com/gemini-testing/json-reporter/commit/f8180c6))
+
+
+
 <a name="0.1.0"></a>
 # 0.1.0 (2017-03-01)
 
