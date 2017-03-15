@@ -14,7 +14,6 @@ describe('collector/hermione', () => {
             return _.defaults(opts || {}, {
                 browserId: 'default-bro',
                 fullTitle: () => 'default full title',
-                file: '/default/path',
                 meta: {url: 'http://default/url'}
             });
         };
@@ -92,6 +91,10 @@ describe('collector/hermione', () => {
                 file: 'file/path',
                 url: '/some-path'
             });
+        });
+
+        it('should not throw an error if test has no parent', () => {
+            assert.doesNotThrow(() => hermioneCollector.configureTestResult(mkDataStub_()));
         });
     });
 
