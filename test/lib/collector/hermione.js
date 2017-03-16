@@ -53,14 +53,14 @@ describe('collector/hermione', () => {
             assert.calledWith(utils.getRelativePath, '/cwd/parent/file/path');
         });
 
-        it('should set url as "null" if "meta.url" is not specified', () => {
+        it('should not set url if "meta.url" is not specified', () => {
             const data = mkDataStub_({
                 meta: {}
             });
 
             const result = hermioneCollector.configureTestResult(data);
 
-            assert.propertyVal(result, 'url', null);
+            assert.notProperty(result, 'url');
         });
 
         it('should set "path" property of "meta.url"', () => {
