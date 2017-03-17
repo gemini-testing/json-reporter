@@ -1,6 +1,6 @@
 {
   "name": "json-reporter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Common plugin for gemini and hermione which is intended to aggregate the results of tests running",
   "main": "gemini.js",
   "scripts": {
