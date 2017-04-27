@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.1.3"></a>
+## [0.1.3](https://github.com/gemini-testing/json-reporter/compare/v0.1.2...v0.1.3) (2017-04-27)
+
+
+### Bug Fixes
+
+* correct error event handling ([6805d64](https://github.com/gemini-testing/json-reporter/commit/6805d64))
+
+
+
 <a name="0.1.2"></a>
 ## [0.1.2](https://github.com/gemini-testing/json-reporter/compare/v0.1.1...v0.1.2) (2017-03-17)
 
