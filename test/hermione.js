@@ -126,7 +126,7 @@ describe('json-reporter/hermione', () => {
             const data = {foo: 'bar'};
             sandbox.stub(Collector.prototype, 'addError');
 
-            hermione.emit(hermione.events.ERROR, data);
+            hermione.emit(hermione.events.ERROR, 'some error', data);
 
             assert.calledOnce(Collector.prototype.addError);
             assert.calledWith(Collector.prototype.addError, data);
