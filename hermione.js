@@ -22,7 +22,7 @@ module.exports = (hermione, opts) => {
 
     hermione.on(hermione.events.RETRY, (data) => collector.addRetry(data));
 
-    hermione.on(hermione.events.ERROR, (data) => collector.addError(data));
+    hermione.on(hermione.events.ERROR, (err, data) => collector.addError(data));
 
     hermione.on(hermione.events.RUNNER_END, () => collector.saveFile());
 };
