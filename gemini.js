@@ -2,10 +2,11 @@
 
 const Collector = require('./lib/collector');
 const geminiCollector = require('./lib/collector/gemini');
-const parseConfig = require('./lib/config');
+const parseConfig = require('gemini-core').PluginsConfig;
+const defaults = require('./lib/constants').defaults;
 
 module.exports = (gemini, opts) => {
-    const config = parseConfig(opts);
+    const config = parseConfig(opts, defaults);
 
     if (!config.enabled) {
         return;
