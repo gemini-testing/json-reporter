@@ -6,6 +6,7 @@ const proxyquire = require('proxyquire');
 
 const Collector = require('../lib/collector');
 const geminiCollector = require('../lib/collector/gemini');
+const defaults = require('../lib/constants').defaults;
 
 describe('json-reporter/gemini', () => {
     const sandbox = sinon.sandbox.create();
@@ -36,7 +37,7 @@ describe('json-reporter/gemini', () => {
         parseConfig = sandbox.stub().returns(opts);
 
         const geminiReporter = proxyquire('../gemini', {
-            './lib/config': parseConfig
+            'gemini-core': {PluginsConfig: parseConfig}
         });
 
         return geminiReporter(gemini, opts);
@@ -60,7 +61,7 @@ describe('json-reporter/gemini', () => {
         initReporter_({enabled: true, path: '/some/path'});
 
         assert.calledOnce(parseConfig);
-        assert.calledWithMatch(parseConfig, {enabled: true, path: '/some/path'});
+        assert.calledWithMatch(parseConfig, {enabled: true, path: '/some/path'}, defaults);
     });
 
     it('should create collector', () => {

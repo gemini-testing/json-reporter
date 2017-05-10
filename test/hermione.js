@@ -6,6 +6,7 @@ const proxyquire = require('proxyquire');
 
 const Collector = require('../lib/collector');
 const hermioneCollector = require('../lib/collector/hermione');
+const defaults = require('../lib/constants').defaults;
 
 describe('json-reporter/hermione', () => {
     const sandbox = sinon.sandbox.create();
@@ -38,7 +39,7 @@ describe('json-reporter/hermione', () => {
         parseConfig = sandbox.stub().returns(opts);
 
         const hermioneReporter = proxyquire('../hermione', {
-            './lib/config': parseConfig
+            'gemini-core': {PluginsConfig: parseConfig}
         });
 
         return hermioneReporter(hermione, opts);
@@ -62,7 +63,7 @@ describe('json-reporter/hermione', () => {
         initReporter_({enabled: true, path: '/some/path'});
 
         assert.calledOnce(parseConfig);
-        assert.calledWithMatch(parseConfig, {enabled: true, path: '/some/path'});
+        assert.calledWithMatch(parseConfig, {enabled: true, path: '/some/path'}, defaults);
     });
 
     it('should create collector', () => {

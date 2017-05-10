@@ -2,11 +2,11 @@
 
 const Collector = require('./lib/collector');
 const hermioneCollector = require('./lib/collector/hermione');
-const parseConfig = require('./lib/config');
+const parseConfig = require('gemini-core').PluginsConfig;
+const defaults = require('./lib/constants').defaults;
 
 module.exports = (hermione, opts) => {
-    const config = parseConfig(opts);
-
+    const config = parseConfig(opts, defaults);
     if (!config.enabled) {
         return;
     }
