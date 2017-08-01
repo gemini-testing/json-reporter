@@ -35,7 +35,7 @@
   "dependencies": {
     "bluebird": "^3.4.7",
     "fs-extra": "^2.0.0",
-    "gemini-configparser": "^0.3.0",
+    "gemini-configparser": "^0.4.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
