@@ -21,7 +21,9 @@ describe('json-reporter/gemini', () => {
             SKIP_STATE: 'skipState',
             RETRY: 'retry',
             ERROR: 'err',
-            END_RUNNER: 'endRunner'
+            END_RUNNER: 'endRunner',
+            BEGIN_STATE: 'beginState',
+            END_STATE: 'endState'
         };
 
         return emitter;
@@ -77,6 +79,16 @@ describe('json-reporter/gemini', () => {
 
     describe('call the appropriate event handlers', () => {
         beforeEach(() => initReporter_());
+
+        it('should call appropriate method on test start', () => {
+            const data = {foo: 'bar'};
+
+            sandbox.stub(Collector.prototype, 'markTestStart');
+            gemini.emit(gemini.events.BEGIN_STATE, data);
+
+            assert.calledOnce(Collector.prototype.markTestStart);
+            assert.calledWith(Collector.prototype.markTestStart, data);
+        });
 
         it('should call appropriate method for passed test', () => {
             const data = {equal: true};
