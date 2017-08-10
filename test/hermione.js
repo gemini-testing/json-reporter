@@ -23,7 +23,9 @@ describe('json-reporter/hermione', () => {
             TEST_PENDING: 'pendingTest',
             RETRY: 'retry',
             ERROR: 'err',
-            RUNNER_END: 'endRunner'
+            RUNNER_END: 'endRunner',
+            TEST_BEGIN: 'beginTest',
+            TEST_END: 'endTest'
         };
 
         return emitter;
@@ -79,6 +81,16 @@ describe('json-reporter/hermione', () => {
 
     describe('call the appropriate event handlers', () => {
         beforeEach(() => initReporter_());
+
+        it('should call appropriate method on test start', () => {
+            const data = {foo: 'bar'};
+            sandbox.stub(Collector.prototype, 'markTestStart');
+
+            hermione.emit(hermione.events.TEST_BEGIN, data);
+
+            assert.calledOnce(Collector.prototype.markTestStart);
+            assert.calledWith(Collector.prototype.markTestStart, data);
+        });
 
         it('should call appropriate method for passed test', () => {
             const data = {foo: 'bar'};

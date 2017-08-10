@@ -13,6 +13,8 @@ module.exports = (hermione, opts) => {
 
     const collector = Collector.create(hermioneCollector, config);
 
+    hermione.on(hermione.events.TEST_BEGIN, (data) => collector.markTestStart(data));
+
     hermione.on(hermione.events.TEST_PASS, (data) => collector.addSuccess(data));
 
     hermione.on(hermione.events.TEST_FAIL, (data) => collector.addFail(data));

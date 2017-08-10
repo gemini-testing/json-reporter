@@ -13,6 +13,8 @@ module.exports = (gemini, opts) => {
 
     const collector = Collector.create(geminiCollector, config);
 
+    gemini.on(gemini.events.BEGIN_STATE, (data) => collector.markTestStart(data));
+
     gemini.on(gemini.events.TEST_RESULT, (data) => {
         data.equal ? collector.addSuccess(data) : collector.addFail(data);
     });
