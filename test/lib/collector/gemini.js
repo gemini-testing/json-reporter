@@ -42,7 +42,8 @@ describe('collector/gemini', () => {
                 state: {fullName: 'state full name'},
                 suite: {
                     file: '/some/file',
-                    url: 'http://some-url'
+                    url: 'http://some-url',
+                    fullName: 'suite full name'
                 }
             });
 
@@ -52,6 +53,7 @@ describe('collector/gemini', () => {
 
             assert.deepEqual(result, {
                 fullName: 'state full name',
+                suiteFullName: 'suite full name',
                 browserId: 'bro',
                 referencePath: 'ref/path',
                 file: '/some/file',
