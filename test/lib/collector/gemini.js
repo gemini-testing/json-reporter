@@ -53,7 +53,7 @@ describe('collector/gemini', () => {
 
             assert.deepEqual(result, {
                 fullName: 'state full name',
-                suiteName: 'suite full name',
+                suiteFullName: 'suite full name',
                 browserId: 'bro',
                 referencePath: 'ref/path',
                 file: '/some/file',
