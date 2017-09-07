@@ -1,7 +1,7 @@
 'use strict';
 
 const Collector = require('./lib/collector');
-const hermioneCollector = require('./lib/collector/hermione');
+const hermioneToolCollector = require('./lib/collector/tool/hermione');
 const parseConfig = require('./lib/config');
 
 module.exports = (hermione, opts) => {
@@ -11,9 +11,7 @@ module.exports = (hermione, opts) => {
         return;
     }
 
-    const collector = Collector.create(hermioneCollector, config);
-
-    hermione.on(hermione.events.TEST_BEGIN, (data) => collector.markTestStart(data));
+    const collector = Collector.create(hermioneToolCollector, config);
 
     hermione.on(hermione.events.TEST_PASS, (data) => collector.addSuccess(data));
 

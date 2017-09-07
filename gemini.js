@@ -1,7 +1,7 @@
 'use strict';
 
-const Collector = require('./lib/collector');
-const geminiCollector = require('./lib/collector/gemini');
+const GeminiCollector = require('./lib/collector/gemini');
+const geminiToolCollector = require('./lib/collector/tool/gemini');
 const parseConfig = require('./lib/config');
 
 module.exports = (gemini, opts) => {
@@ -11,7 +11,7 @@ module.exports = (gemini, opts) => {
         return;
     }
 
-    const collector = Collector.create(geminiCollector, config);
+    const collector = GeminiCollector.create(geminiToolCollector, config);
 
     gemini.on(gemini.events.BEGIN_STATE, (data) => collector.markTestStart(data));
 
