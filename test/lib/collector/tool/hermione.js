@@ -1,10 +1,10 @@
 'use strict';
 
 const _ = require('lodash');
-const hermioneCollector = require('../../../lib/collector/hermione');
-const utils = require('../../../lib/collector/utils');
+const hermioneToolCollector = require('../../../../lib/collector/tool/hermione');
+const utils = require('../../../../lib/collector/utils');
 
-describe('collector/hermione', () => {
+describe('collector/tool/hermione', () => {
     const sandbox = sinon.sandbox.create();
 
     afterEach(() => sandbox.restore());
@@ -23,10 +23,9 @@ describe('collector/hermione', () => {
         it('should try to resolve "file" from test result', () => {
             const data = mkDataStub_({file: '/cwd/file/path'});
 
-            hermioneCollector.configureTestResult(data);
+            hermioneToolCollector.configureTestResult(data);
 
-            assert.calledOnce(utils.getRelativePath);
-            assert.calledWith(utils.getRelativePath, '/cwd/file/path');
+            assert.calledOnceWith(utils.getRelativePath, '/cwd/file/path');
         });
 
         it('should try to resolve "file" from test result even if it exists in "parent"', () => {
@@ -35,10 +34,9 @@ describe('collector/hermione', () => {
                 parent: {file: '/cwd/parent/file/path'}
             });
 
-            hermioneCollector.configureTestResult(data);
+            hermioneToolCollector.configureTestResult(data);
 
-            assert.calledOnce(utils.getRelativePath);
-            assert.calledWith(utils.getRelativePath, '/cwd/file/path');
+            assert.calledOnceWith(utils.getRelativePath, '/cwd/file/path');
         });
 
         it('should try to resolve "file" from "parent" if it does not exist in test result', () => {
@@ -47,10 +45,9 @@ describe('collector/hermione', () => {
                 parent: {file: '/cwd/parent/file/path'}
             });
 
-            hermioneCollector.configureTestResult(data);
+            hermioneToolCollector.configureTestResult(data);
 
-            assert.calledOnce(utils.getRelativePath);
-            assert.calledWith(utils.getRelativePath, '/cwd/parent/file/path');
+            assert.calledOnceWith(utils.getRelativePath, '/cwd/parent/file/path');
         });
 
         it('should not set url if "meta.url" is not specified', () => {
@@ -58,7 +55,7 @@ describe('collector/hermione', () => {
                 meta: {}
             });
 
-            const result = hermioneCollector.configureTestResult(data);
+            const result = hermioneToolCollector.configureTestResult(data);
 
             assert.notProperty(result, 'url');
         });
@@ -68,9 +65,17 @@ describe('collector/hermione', () => {
                 meta: {url: 'http://example.com/some-path?query=string'}
             });
 
-            const result = hermioneCollector.configureTestResult(data);
+            const result = hermioneToolCollector.configureTestResult(data);
 
             assert.propertyVal(result, 'url', '/some-path?query=string');
+        });
+
+        it('should set "duration" to "null" if it does not specify', () => {
+            const data = mkDataStub_();
+
+            const result = hermioneToolCollector.configureTestResult(data);
+
+            assert.propertyVal(result, 'duration', null);
         });
 
         it('should return configured result', () => {
@@ -78,29 +83,31 @@ describe('collector/hermione', () => {
                 browserId: 'bro',
                 fullTitle: () => 'some full title',
                 file: '/cwd/file/path',
-                meta: {url: 'http://some-url/some-path'}
+                meta: {url: 'http://some-url/some-path'},
+                duration: 12345
             });
 
             utils.getRelativePath.withArgs('/cwd/file/path').returns('file/path');
 
-            const result = hermioneCollector.configureTestResult(data);
+            const result = hermioneToolCollector.configureTestResult(data);
 
             assert.deepEqual(result, {
                 fullName: 'some full title',
                 browserId: 'bro',
                 file: 'file/path',
-                url: '/some-path'
+                url: '/some-path',
+                duration: 12345
             });
         });
 
         it('should not throw an error if test has no parent', () => {
-            assert.doesNotThrow(() => hermioneCollector.configureTestResult(mkDataStub_()));
+            assert.doesNotThrow(() => hermioneToolCollector.configureTestResult(mkDataStub_()));
         });
     });
 
     describe('isFailedTest', () => {
         it('should return "true" if test is failed', () => {
-            assert.isTrue(hermioneCollector.isFailedTest({state: 'failed'}));
+            assert.isTrue(hermioneToolCollector.isFailedTest({state: 'failed'}));
         });
 
         it('should return "true" if hook is failed', () => {
@@ -108,25 +115,25 @@ describe('collector/hermione', () => {
                 state: 'failed'
             }};
 
-            assert.isTrue(hermioneCollector.isFailedTest(result));
+            assert.isTrue(hermioneToolCollector.isFailedTest(result));
         });
 
         it('should return "false" if test and hook are not failed', () => {
             const result = {hook: {}};
 
-            assert.isFalse(hermioneCollector.isFailedTest(result));
+            assert.isFalse(hermioneToolCollector.isFailedTest(result));
         });
     });
 
     describe('getSkipReason', () => {
         it('should return default skip reason if "skipReason" is not specified', () => {
-            assert.strictEqual(hermioneCollector.getSkipReason({}), 'No skip reason');
+            assert.strictEqual(hermioneToolCollector.getSkipReason({}), 'No skip reason');
         });
 
         it('should return skip reason from test result', () => {
             const data = {skipReason: 'test-comment'};
 
-            assert.strictEqual(hermioneCollector.getSkipReason(data), 'test-comment');
+            assert.strictEqual(hermioneToolCollector.getSkipReason(data), 'test-comment');
         });
 
         it('should return skip reason from "parent" if it does not exist in test result', () => {
@@ -135,7 +142,7 @@ describe('collector/hermione', () => {
                 parent: {skipReason: 'suite-comment'}
             };
 
-            assert.strictEqual(hermioneCollector.getSkipReason(data), 'suite-comment');
+            assert.strictEqual(hermioneToolCollector.getSkipReason(data), 'suite-comment');
         });
 
         it('should return skip reason from "parent" even if it exists in test result', () => {
@@ -144,7 +151,7 @@ describe('collector/hermione', () => {
                 parent: {skipReason: 'suite-comment'}
             };
 
-            assert.strictEqual(hermioneCollector.getSkipReason(data), 'suite-comment');
+            assert.strictEqual(hermioneToolCollector.getSkipReason(data), 'suite-comment');
         });
     });
 });

@@ -9,7 +9,6 @@ const DataCollector = require('../../../lib/collector/data-collector');
 
 describe('collector/index', () => {
     const sandbox = sinon.sandbox.create();
-    let clock;
 
     const mkToolCollector_ = (opts) => {
         return _.defaults(opts || {}, {
@@ -28,14 +27,7 @@ describe('collector/index', () => {
         return Collector.create(toolCollector, config);
     };
 
-    beforeEach(() => {
-        clock = sinon.useFakeTimers();
-    });
-
-    afterEach(() => {
-        clock.restore();
-        sandbox.restore();
-    });
+    afterEach(() => sandbox.restore());
 
     describe('create', () => {
         beforeEach(() => sandbox.stub(DataCollector, 'create'));
@@ -65,7 +57,6 @@ describe('collector/index', () => {
             const data = {fullName: 'some name', browserId: 'bro'};
             const collector = mkCollector_();
 
-            collector.markTestStart(data);
             collector.addSuccess(data);
 
             return saveReport_(collector).then((result) => {
@@ -73,8 +64,7 @@ describe('collector/index', () => {
                     'some name.bro': {
                         fullName: 'some name',
                         browserId: 'bro',
-                        status: 'success',
-                        duration: 0
+                        status: 'success'
                     }});
             });
         });
@@ -83,15 +73,13 @@ describe('collector/index', () => {
             const data = {fullName: 'some name', browserId: 'bro'};
             const collector = mkCollector_();
 
-            collector.markTestStart(data);
             collector.addFail(data);
 
             return saveReport_(collector).then((result) => {
                 assert.deepEqual(result, {'some name.bro': {
                     fullName: 'some name',
                     browserId: 'bro',
-                    status: 'fail',
-                    duration: 0
+                    status: 'fail'
                 }});
             });
         });
@@ -102,7 +90,6 @@ describe('collector/index', () => {
                 getSkipReason: sandbox.stub().returns('some-reason')
             });
 
-            collector.markTestStart(data);
             collector.addSkipped(data);
 
             return saveReport_(collector).then((result) => {
@@ -110,8 +97,7 @@ describe('collector/index', () => {
                     fullName: 'some name',
                     browserId: 'bro',
                     status: 'skipped',
-                    skipReason: 'some-reason',
-                    duration: 0
+                    skipReason: 'some-reason'
                 }});
             });
         });
@@ -122,15 +108,13 @@ describe('collector/index', () => {
                 isFailedTest: sandbox.stub().returns(true)
             });
 
-            collector.markTestStart(data);
             collector.addRetry(data);
 
             return saveReport_(collector).then((result) => {
                 assert.deepEqual(result, {'some name.bro': {
                     fullName: 'some name',
                     browserId: 'bro',
-                    status: 'fail',
-                    duration: 0
+                    status: 'fail'
                 }});
             });
         });
@@ -141,7 +125,6 @@ describe('collector/index', () => {
                 isFailedTest: sandbox.stub().returns(false)
             });
 
-            collector.markTestStart(data);
             collector.addRetry(data);
 
             return saveReport_(collector).then((result) => {
@@ -149,8 +132,7 @@ describe('collector/index', () => {
                     fullName: 'some name',
                     browserId: 'bro',
                     status: 'error',
-                    errorReason: '',
-                    duration: 0
+                    errorReason: ''
                 }});
             });
         });
@@ -173,20 +155,6 @@ describe('collector/index', () => {
 
             return saveReport_(collector)
                 .then((result) => assert.deepPropertyVal(result['some name.bro'], 'errorReason', 'stack-msg'));
-        });
-    });
-
-    describe('markTestStart', () => {
-        it('should save test start time in data collector', () => {
-            sandbox.stub(DataCollector.prototype, 'saveStartTime');
-
-            const data = {fullName: 'some name', browserId: 'bro'};
-            const collector = mkCollector_();
-
-            collector.markTestStart(data);
-
-            assert.calledOnce(DataCollector.prototype.saveStartTime);
-            assert.calledWith(DataCollector.prototype.saveStartTime, data);
         });
     });
 

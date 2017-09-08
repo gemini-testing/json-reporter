@@ -5,7 +5,7 @@ const EventEmitter = require('events').EventEmitter;
 const proxyquire = require('proxyquire');
 
 const Collector = require('../lib/collector');
-const hermioneCollector = require('../lib/collector/hermione');
+const hermioneToolCollector = require('../lib/collector/tool/hermione');
 
 describe('json-reporter/hermione', () => {
     const sandbox = sinon.sandbox.create();
@@ -24,7 +24,6 @@ describe('json-reporter/hermione', () => {
             RETRY: 'retry',
             ERROR: 'err',
             RUNNER_END: 'endRunner',
-            TEST_BEGIN: 'beginTest',
             TEST_END: 'endTest'
         };
 
@@ -74,7 +73,7 @@ describe('json-reporter/hermione', () => {
 
         assert.calledWith(
             Collector.create,
-            hermioneCollector,
+            hermioneToolCollector,
             {enabled: true, path: '/some/path'}
         );
     });
@@ -82,24 +81,13 @@ describe('json-reporter/hermione', () => {
     describe('call the appropriate event handlers', () => {
         beforeEach(() => initReporter_());
 
-        it('should call appropriate method on test start', () => {
-            const data = {foo: 'bar'};
-            sandbox.stub(Collector.prototype, 'markTestStart');
-
-            hermione.emit(hermione.events.TEST_BEGIN, data);
-
-            assert.calledOnce(Collector.prototype.markTestStart);
-            assert.calledWith(Collector.prototype.markTestStart, data);
-        });
-
         it('should call appropriate method for passed test', () => {
             const data = {foo: 'bar'};
             sandbox.stub(Collector.prototype, 'addSuccess');
 
             hermione.emit(hermione.events.TEST_PASS, data);
 
-            assert.calledOnce(Collector.prototype.addSuccess);
-            assert.calledWith(Collector.prototype.addSuccess, data);
+            assert.calledOnceWith(Collector.prototype.addSuccess, data);
         });
 
         ['TEST_FAIL', 'SUITE_FAIL'].forEach((eventName) => {
@@ -109,8 +97,7 @@ describe('json-reporter/hermione', () => {
 
                 hermione.emit(hermione.events[eventName], data);
 
-                assert.calledOnce(Collector.prototype.addFail);
-                assert.calledWith(Collector.prototype.addFail, data);
+                assert.calledOnceWith(Collector.prototype.addFail, data);
             });
         });
 
@@ -120,8 +107,7 @@ describe('json-reporter/hermione', () => {
 
             hermione.emit(hermione.events.TEST_PENDING, data);
 
-            assert.calledOnce(Collector.prototype.addSkipped);
-            assert.calledWith(Collector.prototype.addSkipped, data);
+            assert.calledOnceWith(Collector.prototype.addSkipped, data);
         });
 
         it('should call appropriate method for retried test', () => {
@@ -130,8 +116,7 @@ describe('json-reporter/hermione', () => {
 
             hermione.emit(hermione.events.RETRY, data);
 
-            assert.calledOnce(Collector.prototype.addRetry);
-            assert.calledWith(Collector.prototype.addRetry, data);
+            assert.calledOnceWith(Collector.prototype.addRetry, data);
         });
 
         it('should call appropriate method for error occurred on test execution', () => {
@@ -140,8 +125,7 @@ describe('json-reporter/hermione', () => {
 
             hermione.emit(hermione.events.ERROR, 'some error', data);
 
-            assert.calledOnce(Collector.prototype.addError);
-            assert.calledWith(Collector.prototype.addError, data);
+            assert.calledOnceWith(Collector.prototype.addError, data);
         });
 
         it('should save collected test data into file when the tests are completed', () => {

@@ -4,8 +4,8 @@ const _ = require('lodash');
 const EventEmitter = require('events').EventEmitter;
 const proxyquire = require('proxyquire');
 
-const Collector = require('../lib/collector');
-const geminiCollector = require('../lib/collector/gemini');
+const GeminiCollector = require('../lib/collector/gemini');
+const geminiToolCollector = require('../lib/collector/tool/gemini');
 
 describe('json-reporter/gemini', () => {
     const sandbox = sinon.sandbox.create();
@@ -51,11 +51,11 @@ describe('json-reporter/gemini', () => {
     afterEach(() => sandbox.restore());
 
     it('should do nothing if plugin is disabled', () => {
-        sandbox.stub(Collector, 'create');
+        sandbox.stub(GeminiCollector, 'create');
 
         initReporter_({enabled: false});
 
-        assert.notCalled(Collector.create);
+        assert.notCalled(GeminiCollector.create);
     });
 
     it('should parse config', () => {
@@ -66,13 +66,13 @@ describe('json-reporter/gemini', () => {
     });
 
     it('should create collector', () => {
-        sandbox.stub(Collector, 'create');
+        sandbox.stub(GeminiCollector, 'create');
 
         initReporter_({enabled: true, path: '/some/path'});
 
         assert.calledWith(
-            Collector.create,
-            geminiCollector,
+            GeminiCollector.create,
+            geminiToolCollector,
             {enabled: true, path: '/some/path'}
         );
     });
@@ -83,69 +83,63 @@ describe('json-reporter/gemini', () => {
         it('should call appropriate method on test start', () => {
             const data = {foo: 'bar'};
 
-            sandbox.stub(Collector.prototype, 'markTestStart');
+            sandbox.stub(GeminiCollector.prototype, 'markTestStart');
             gemini.emit(gemini.events.BEGIN_STATE, data);
 
-            assert.calledOnce(Collector.prototype.markTestStart);
-            assert.calledWith(Collector.prototype.markTestStart, data);
+            assert.calledOnceWith(GeminiCollector.prototype.markTestStart, data);
         });
 
         it('should call appropriate method for passed test', () => {
             const data = {equal: true};
-            sandbox.stub(Collector.prototype, 'addSuccess');
+            sandbox.stub(GeminiCollector.prototype, 'addSuccess');
 
             gemini.emit(gemini.events.TEST_RESULT, data);
 
-            assert.calledOnce(Collector.prototype.addSuccess);
-            assert.calledWith(Collector.prototype.addSuccess, data);
+            assert.calledOnceWith(GeminiCollector.prototype.addSuccess, data);
         });
 
         it('should call appropriate method for failed test', () => {
             const data = {equal: false};
-            sandbox.stub(Collector.prototype, 'addFail');
+            sandbox.stub(GeminiCollector.prototype, 'addFail');
 
             gemini.emit(gemini.events.TEST_RESULT, data);
 
-            assert.calledOnce(Collector.prototype.addFail);
-            assert.calledWith(Collector.prototype.addFail, data);
+            assert.calledOnceWith(GeminiCollector.prototype.addFail, data);
         });
 
         it('should call appropriate method for skipped test', () => {
             const data = {foo: 'bar'};
-            sandbox.stub(Collector.prototype, 'addSkipped');
+            sandbox.stub(GeminiCollector.prototype, 'addSkipped');
 
             gemini.emit(gemini.events.SKIP_STATE, data);
 
-            assert.calledOnce(Collector.prototype.addSkipped);
-            assert.calledWith(Collector.prototype.addSkipped, data);
+            assert.calledOnceWith(GeminiCollector.prototype.addSkipped, data);
         });
 
         it('should call appropriate method for retried test', () => {
             const data = {foo: 'bar'};
-            sandbox.stub(Collector.prototype, 'addRetry');
+            sandbox.stub(GeminiCollector.prototype, 'addRetry');
 
             gemini.emit(gemini.events.RETRY, data);
 
-            assert.calledOnce(Collector.prototype.addRetry);
-            assert.calledWith(Collector.prototype.addRetry, data);
+            assert.calledOnceWith(GeminiCollector.prototype.addRetry, data);
         });
 
         it('should call appropriate method for error occurred on test execution', () => {
             const data = {foo: 'bar'};
-            sandbox.stub(Collector.prototype, 'addError');
+            sandbox.stub(GeminiCollector.prototype, 'addError');
 
             gemini.emit(gemini.events.ERROR, data);
 
-            assert.calledOnce(Collector.prototype.addError);
-            assert.calledWith(Collector.prototype.addError, data);
+            assert.calledOnceWith(GeminiCollector.prototype.addError, data);
         });
 
         it('should save collected test data into file when the tests are completed', () => {
-            sandbox.stub(Collector.prototype, 'saveFile');
+            sandbox.stub(GeminiCollector.prototype, 'saveFile');
 
             gemini.emit(gemini.events.END_RUNNER);
 
-            assert.calledOnce(Collector.prototype.saveFile);
+            assert.calledOnce(GeminiCollector.prototype.saveFile);
         });
     });
 });
