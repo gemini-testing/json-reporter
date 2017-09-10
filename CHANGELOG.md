@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/gemini-testing/json-reporter/compare/v0.2.0...v0.4.0) (2017-09-10)
+
+
+### Bug Fixes
+
+* execution time in hermione ([34dec3b](https://github.com/gemini-testing/json-reporter/commit/34dec3b))
+
+
+### Features
+
+* collect 'suiteFullName' property from gemini test result ([27cf554](https://github.com/gemini-testing/json-reporter/commit/27cf554))
+* collect 'suiteName' property from gemini test result ([90cfd79](https://github.com/gemini-testing/json-reporter/commit/90cfd79))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/gemini-testing/json-reporter/compare/v0.1.3...v0.2.0) (2017-08-10)
 
