@@ -1,88 +1,153 @@
 'use strict';
 
 const _ = require('lodash');
-const geminiCollector = require('../../../lib/collector/gemini');
-const utils = require('../../../lib/collector/utils');
+const fs = require('fs-extra');
+const Promise = require('bluebird');
+
+const GeminiCollector = require('../../../lib/collector/gemini');
+const GeminiDataCollector = require('../../../lib/collector/data-collector/gemini');
 
 describe('collector/gemini', () => {
     const sandbox = sinon.sandbox.create();
+    let clock;
 
-    afterEach(() => sandbox.restore());
+    const mkToolCollector_ = (opts) => {
+        return _.defaults(opts || {}, {
+            configureTestResult: (data) => data,
+            isFailedTest: sandbox.stub(),
+            getSkipReason: sandbox.stub()
+        });
+    };
 
-    describe('configureTestResult', () => {
-        const mkDataStub_ = (opts) => {
-            return _.defaults(opts || {}, {
-                browserId: 'default-bro',
-                referencePath: '/default/ref/path',
-                state: {fullName: 'default full name'},
-                suite: {
-                    file: '/default/path',
-                    url: 'http://default/url'
-                }
-            });
+    const mkGeminiCollector_ = (toolCollectorOpts, opts) => {
+        const toolCollector = mkToolCollector_(toolCollectorOpts);
+        const config = _.defaults(opts || {}, {
+            path: '/default/path'
+        });
+
+        return GeminiCollector.create(toolCollector, config);
+    };
+
+    beforeEach(() => {
+        clock = sinon.useFakeTimers();
+    });
+
+    afterEach(() => {
+        clock.restore();
+        sandbox.restore();
+    });
+
+    describe('create', () => {
+        beforeEach(() => sandbox.stub(GeminiDataCollector, 'create'));
+
+        it('should has static factory creation method', () => {
+            assert.instanceOf(GeminiCollector.create(), GeminiCollector);
+        });
+
+        it('should create instance of GeminiDataCollector inside the GeminiCollector creation', () => {
+            GeminiCollector.create();
+
+            assert.calledOnce(GeminiDataCollector.create);
+        });
+    });
+
+    describe('markTestStart', () => {
+        it('should save test start time in data collector', () => {
+            sandbox.stub(GeminiDataCollector.prototype, 'saveStartTime');
+
+            const data = {fullName: 'some name', browserId: 'bro'};
+            const collector = mkGeminiCollector_();
+
+            collector.markTestStart(data);
+
+            assert.calledOnceWith(GeminiDataCollector.prototype.saveStartTime, data);
+        });
+    });
+
+    describe('should add "duration" time to the', () => {
+        const saveReport_ = (collector) => {
+            return collector.saveFile()
+                .then(() => fs.outputJsonAsync.firstCall.args[1]);
         };
 
-        beforeEach(() => sandbox.stub(utils, 'getRelativePath'));
-
-        it('should try to resolve "referencePath"', () => {
-            const data = mkDataStub_({
-                referencePath: '/cwd/ref/path'
-            });
-
-            geminiCollector.configureTestResult(data);
-
-            assert.calledOnce(utils.getRelativePath);
-            assert.calledWith(utils.getRelativePath, '/cwd/ref/path');
+        beforeEach(() => {
+            sandbox.stub(fs, 'outputJsonAsync').returns(Promise.resolve());
         });
 
-        it('should return configured result', () => {
-            const data = mkDataStub_({
-                browserId: 'bro',
-                referencePath: '/cwd/ref/path',
-                state: {fullName: 'state full name'},
-                suite: {
-                    file: '/some/file',
-                    url: 'http://some-url',
-                    fullName: 'suite full name'
-                }
-            });
+        it('succesfully passed test', () => {
+            const data = {fullName: 'some name', browserId: 'bro'};
+            const collector = mkGeminiCollector_();
 
-            utils.getRelativePath.withArgs('/cwd/ref/path').returns('ref/path');
+            collector.markTestStart(data);
+            collector.addSuccess(data);
 
-            const result = geminiCollector.configureTestResult(data);
-
-            assert.deepEqual(result, {
-                fullName: 'state full name',
-                suiteFullName: 'suite full name',
-                browserId: 'bro',
-                referencePath: 'ref/path',
-                file: '/some/file',
-                url: 'http://some-url'
+            return saveReport_(collector).then((result) => {
+                assert.propertyVal(result['some name.bro'], 'duration', 0);
             });
         });
-    });
 
-    describe('isFailedTest', () => {
-        it('should return "true" if result has own property "equal"', () => {
-            assert.isTrue(geminiCollector.isFailedTest({equal: true}));
+        it('skipped test', () => {
+            const data = {fullName: 'some name', browserId: 'bro'};
+            const collector = mkGeminiCollector_();
+
+            collector.markTestStart(data);
+            collector.addSkipped(data);
+
+            return saveReport_(collector).then((result) => {
+                assert.propertyVal(result['some name.bro'], 'duration', 0);
+            });
         });
 
-        it('should return "false" if result has not property "equal"', () => {
-            assert.isFalse(geminiCollector.isFailedTest({}));
+        it('failed test', () => {
+            const data = {fullName: 'some name', browserId: 'bro'};
+            const collector = mkGeminiCollector_();
+
+            collector.markTestStart(data);
+            collector.addFail(data);
+
+            return saveReport_(collector).then((result) => {
+                assert.propertyVal(result['some name.bro'], 'duration', 0);
+            });
         });
-    });
 
-    describe('getSkipReason', () => {
-        it('should return default skip reason if "suite.skipComment" is not specified', () => {
-            assert.strictEqual(geminiCollector.getSkipReason({}), 'No skip reason');
+        it('failed test if the retry fails', () => {
+            const data = {fullName: 'some name', browserId: 'bro'};
+            const collector = mkGeminiCollector_({
+                isFailedTest: sandbox.stub().returns(true)
+            });
+
+            collector.markTestStart(data);
+            collector.addRetry(data);
+
+            return saveReport_(collector).then((result) => {
+                assert.propertyVal(result['some name.bro'], 'duration', 0);
+            });
         });
 
-        it('should return skip reason if "suite.skipComment" is specified', () => {
-            const data = {
-                suite: {skipComment: 'some-comment'}
-            };
+        it('errored test', () => {
+            const data = {fullName: 'some name', browserId: 'bro'};
+            const collector = mkGeminiCollector_();
 
-            assert.strictEqual(geminiCollector.getSkipReason(data), 'some-comment');
+            collector.markTestStart(data);
+            collector.addError(data);
+
+            return saveReport_(collector).then((result) => {
+                assert.propertyVal(result['some name.bro'], 'duration', 0);
+            });
+        });
+
+        it('errored test if the retry does not fails', () => {
+            const data = {fullName: 'some name', browserId: 'bro'};
+            const collector = mkGeminiCollector_({
+                isFailedTest: sandbox.stub().returns(false)
+            });
+
+            collector.markTestStart(data);
+            collector.addRetry(data);
+
+            return saveReport_(collector).then((result) => {
+                assert.propertyVal(result['some name.bro'], 'duration', 0);
+            });
         });
     });
 });
