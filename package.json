@@ -7,8 +7,6 @@
     "lint": "eslint .",
     "test": "npm run lint && npm run test-unit",
     "test-unit": "mocha test",
-    "cover": "istanbul cover _mocha test",
-    "coveralls": "npm i coveralls && npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
     "precommit": "npm run lint",
     "commitmsg": "conventional-changelog-lint -e",
     "release": "standard-version"
@@ -21,7 +19,7 @@
     "url": "https://github.com/gemini-testing/json-reporter/issues"
   },
   "engines": {
-    "node": ">= 4"
+    "node": ">= 6"
   },
   "keywords": [
     "gemini",
@@ -35,7 +33,7 @@
   "dependencies": {
     "bluebird": "^3.4.7",
     "fs-extra": "^2.0.0",
-    "gemini-configparser": "^0.4.0",
+    "gemini-configparser": "^1.0.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
@@ -44,7 +42,6 @@
     "eslint": "^3.4.0",
     "eslint-config-gemini-testing": "^2.2.0",
     "husky": "^0.11.9",
-    "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
     "proxyquire": "^1.7.11",
     "sinon": "^1.17.5",
