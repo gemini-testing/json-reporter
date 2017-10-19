@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/gemini-testing/json-reporter/compare/v0.4.0...v0.5.0) (2017-10-19)
+
+
+### Features
+
+* use --json-reporter- as a cli prefix for plugin options ([c3aaf4d](https://github.com/gemini-testing/json-reporter/commit/c3aaf4d))
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/gemini-testing/json-reporter/compare/v0.2.0...v0.4.0) (2017-09-10)
 
