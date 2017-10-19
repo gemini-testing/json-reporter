@@ -2,7 +2,6 @@
 
 [![npm](https://img.shields.io/npm/v/json-reporter.svg)](https://www.npmjs.com/package/json-reporter)
 [![Build Status](https://travis-ci.org/gemini-testing/json-reporter.svg?branch=master)](https://travis-ci.org/gemini-testing/json-reporter)
-[![Coverage Status](https://img.shields.io/coveralls/gemini-testing/json-reporter.svg?style=flat)](https://coveralls.io/r/gemini-testing/json-reporter?branch=master)
 
 Common plugin for:
 
