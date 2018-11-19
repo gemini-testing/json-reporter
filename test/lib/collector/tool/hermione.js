@@ -83,7 +83,7 @@ describe('collector/tool/hermione', () => {
                 browserId: 'bro',
                 fullTitle: () => 'some full title',
                 file: '/cwd/file/path',
-                meta: {url: 'http://some-url/some-path'},
+                meta: {url: 'http://some-url/some-path', foo: 'bar'},
                 duration: 12345
             });
 
@@ -96,6 +96,7 @@ describe('collector/tool/hermione', () => {
                 browserId: 'bro',
                 file: 'file/path',
                 url: '/some-path',
+                meta: {url: 'http://some-url/some-path', foo: 'bar'},
                 duration: 12345
             });
         });
