@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/gemini-testing/json-reporter/compare/v0.4.0...v0.6.0) (2018-11-19)
+
+
+### Bug Fixes
+
+* parse cli and config validation ([e391f98](https://github.com/gemini-testing/json-reporter/commit/e391f98))
+
+
+### Features
+
+* add meta info to test result ([08bcf4b](https://github.com/gemini-testing/json-reporter/commit/08bcf4b))
+* use --json-reporter- as a cli prefix for plugin options ([c3aaf4d](https://github.com/gemini-testing/json-reporter/commit/c3aaf4d))
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/gemini-testing/json-reporter/compare/v0.4.0...v0.5.0) (2017-10-19)
 
