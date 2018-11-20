@@ -13,7 +13,7 @@ describe('collector/tool/gemini', () => {
         const mkDataStub_ = (opts) => {
             return _.defaults(opts || {}, {
                 browserId: 'default-bro',
-                referencePath: '/default/ref/path',
+                refImg: {path: '/default/ref/path'},
                 state: {fullName: 'default full name'},
                 suite: {
                     file: '/default/path',
@@ -26,7 +26,7 @@ describe('collector/tool/gemini', () => {
 
         it('should try to resolve "referencePath"', () => {
             const data = mkDataStub_({
-                referencePath: '/cwd/ref/path'
+                refImg: {path: '/cwd/ref/path'}
             });
 
             geminiToolCollector.configureTestResult(data);
@@ -37,7 +37,7 @@ describe('collector/tool/gemini', () => {
         it('should return configured result', () => {
             const data = mkDataStub_({
                 browserId: 'bro',
-                referencePath: '/cwd/ref/path',
+                refImg: {path: '/cwd/ref/path'},
                 state: {fullName: 'state full name'},
                 suite: {
                     file: '/some/file',
