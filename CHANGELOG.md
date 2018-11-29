@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/gemini-testing/json-reporter/compare/v0.6.0...v1.0.0) (2018-11-29)
+
+
+### Features
+
+* support the changed field name "referencePath" -> "refImg.path" ([3abc32e](https://github.com/gemini-testing/json-reporter/commit/3abc32e))
+
+
+### BREAKING CHANGES
+
+* in gemini changed format of data emitted on test execution events
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/gemini-testing/json-reporter/compare/v0.5.1...v0.6.0) (2018-11-19)
 
