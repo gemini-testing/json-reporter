@@ -49,14 +49,14 @@ describe('collector/data-collector/index', () => {
         });
     });
 
-    it('should replace the existing test in data collector', () => {
+    it('should merge the existing test in data collector with new one', () => {
         const dataCollector = DataCollector.create({});
 
-        dataCollector.append({foo: 'bar'});
-        dataCollector.append({foo: 'baz'});
+        dataCollector.append({foo: 'bar', arr: [1]});
+        dataCollector.append({foo: 'baz', arr: [2]});
 
         assert.deepEqual(dataCollector.getData(), {
-            '': {foo: 'baz'}
+            '': {foo: 'baz', arr: [1, 2]}
         });
     });
 });

@@ -28,8 +28,14 @@ describe('collector/gemini', () => {
         return GeminiCollector.create(toolCollector, config);
     };
 
+    const saveReport_ = (collector) => {
+        return collector.saveFile()
+            .then(() => fs.outputJsonAsync.firstCall.args[1]);
+    };
+
     beforeEach(() => {
         clock = sinon.useFakeTimers();
+        sandbox.stub(fs, 'outputJsonAsync').returns(Promise.resolve());
     });
 
     afterEach(() => {
@@ -65,15 +71,6 @@ describe('collector/gemini', () => {
     });
 
     describe('should add "duration" time to the', () => {
-        const saveReport_ = (collector) => {
-            return collector.saveFile()
-                .then(() => fs.outputJsonAsync.firstCall.args[1]);
-        };
-
-        beforeEach(() => {
-            sandbox.stub(fs, 'outputJsonAsync').returns(Promise.resolve());
-        });
-
         it('succesfully passed test', () => {
             const data = {fullName: 'some name', browserId: 'bro'};
             const collector = mkGeminiCollector_();
@@ -99,25 +96,11 @@ describe('collector/gemini', () => {
         });
 
         it('failed test', () => {
-            const data = {fullName: 'some name', browserId: 'bro'};
+            const data = {fullName: 'some name', browserId: 'bro', err: new Error('test')};
             const collector = mkGeminiCollector_();
 
             collector.markTestStart(data);
             collector.addFail(data);
-
-            return saveReport_(collector).then((result) => {
-                assert.propertyVal(result['some name.bro'], 'duration', 0);
-            });
-        });
-
-        it('failed test if the retry fails', () => {
-            const data = {fullName: 'some name', browserId: 'bro'};
-            const collector = mkGeminiCollector_({
-                isFailedTest: sandbox.stub().returns(true)
-            });
-
-            collector.markTestStart(data);
-            collector.addRetry(data);
 
             return saveReport_(collector).then((result) => {
                 assert.propertyVal(result['some name.bro'], 'duration', 0);
@@ -136,7 +119,7 @@ describe('collector/gemini', () => {
             });
         });
 
-        it('errored test if the retry does not fails', () => {
+        it('errored test if the retry does not fail', () => {
             const data = {fullName: 'some name', browserId: 'bro'};
             const collector = mkGeminiCollector_({
                 isFailedTest: sandbox.stub().returns(false)
@@ -147,6 +130,41 @@ describe('collector/gemini', () => {
 
             return saveReport_(collector).then((result) => {
                 assert.propertyVal(result['some name.bro'], 'duration', 0);
+            });
+        });
+    });
+
+    describe('should add on retry', () => {
+        it('failed test if the retry fails', () => {
+            const testError = new Error('test');
+            const data = {fullName: 'some name', browserId: 'bro', err: testError};
+            const collector = mkGeminiCollector_({
+                isFailedTest: sandbox.stub().returns(true)
+            });
+
+            collector.addRetry(data);
+
+            return saveReport_(collector).then((result) => {
+                const bro = result['some name.bro'];
+                assert.propertyVal(bro, 'status', 'fail');
+                assert.propertyVal(bro, 'errorReason', testError.stack);
+                assert.deepEqual(bro.retries, [{error: testError.stack}]);
+            });
+        });
+
+        it('errored test if the retry does not fail', () => {
+            const data = {fullName: 'some name', browserId: 'bro'};
+            const collector = mkGeminiCollector_({
+                isFailedTest: sandbox.stub().returns(false)
+            });
+
+            collector.addRetry(data);
+
+            return saveReport_(collector).then((result) => {
+                const bro = result['some name.bro'];
+                assert.propertyVal(bro, 'status', 'error');
+                assert.propertyVal(bro, 'errorReason', '');
+                assert.deepEqual(bro.retries, [{error: ''}]);
             });
         });
     });
