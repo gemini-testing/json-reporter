@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/gemini-testing/json-reporter/compare/v1.0.0...v1.1.0) (2018-12-29)
+
+
+### Features
+
+* save stacktraces ([6877242](https://github.com/gemini-testing/json-reporter/commit/6877242))
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/gemini-testing/json-reporter/compare/v0.6.0...v1.0.0) (2018-11-29)
 
