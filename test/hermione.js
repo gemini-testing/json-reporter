@@ -90,15 +90,13 @@ describe('json-reporter/hermione', () => {
             assert.calledOnceWith(Collector.prototype.addSuccess, data);
         });
 
-        ['TEST_FAIL', 'SUITE_FAIL'].forEach((eventName) => {
-            it('should call appropriate method for failed test', () => {
-                const data = {foo: 'bar'};
-                sandbox.stub(Collector.prototype, 'addFail');
+        it('should call appropriate method for failed test', () => {
+            const data = {foo: 'bar'};
+            sandbox.stub(Collector.prototype, 'addFail');
 
-                hermione.emit(hermione.events[eventName], data);
+            hermione.emit(hermione.events.TEST_FAIL, data);
 
-                assert.calledOnceWith(Collector.prototype.addFail, data);
-            });
+            assert.calledOnceWith(Collector.prototype.addFail, data);
         });
 
         it('should call appropriate method for skipped test', () => {

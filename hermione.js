@@ -16,7 +16,6 @@ module.exports = (hermione, opts) => {
     hermione.on(hermione.events.TEST_PASS, (data) => collector.addSuccess(data));
 
     hermione.on(hermione.events.TEST_FAIL, (data) => collector.addFail(data));
-    hermione.on(hermione.events.SUITE_FAIL, (data) => collector.addFail(data));
 
     hermione.on(hermione.events.TEST_PENDING, (data) => collector.addSkipped(data));
 

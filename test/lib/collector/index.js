@@ -12,8 +12,10 @@ describe('collector/index', () => {
 
     const mkToolCollector_ = (opts) => {
         return _.defaults(opts || {}, {
-            configureTestResult: (data) => data,
-            isFailedTest: sandbox.stub(),
+            configureTestResult: (data) => {
+                delete data.err;
+                return data;
+            },
             getSkipReason: sandbox.stub()
         });
     };
@@ -70,7 +72,8 @@ describe('collector/index', () => {
         });
 
         it('should add failed test', () => {
-            const data = {fullName: 'some name', browserId: 'bro'};
+            const testError = new Promise.OperationalError('test');
+            const data = {fullName: 'some name', browserId: 'bro', err: testError};
             const collector = mkCollector_();
 
             collector.addFail(data);
@@ -79,7 +82,9 @@ describe('collector/index', () => {
                 assert.deepEqual(result, {'some name.bro': {
                     fullName: 'some name',
                     browserId: 'bro',
-                    status: 'fail'
+                    status: 'fail',
+                    errorReason: testError.stack,
+                    retries: [{error: testError.stack}]
                 }});
             });
         });
@@ -103,10 +108,9 @@ describe('collector/index', () => {
         });
 
         it('should add failed test if the retry fails', () => {
-            const data = {fullName: 'some name', browserId: 'bro'};
-            const collector = mkCollector_({
-                isFailedTest: sandbox.stub().returns(true)
-            });
+            const testError = new Promise.OperationalError('test');
+            const data = {fullName: 'some name', browserId: 'bro', err: testError};
+            const collector = mkCollector_();
 
             collector.addRetry(data);
 
@@ -114,25 +118,9 @@ describe('collector/index', () => {
                 assert.deepEqual(result, {'some name.bro': {
                     fullName: 'some name',
                     browserId: 'bro',
-                    status: 'fail'
-                }});
-            });
-        });
-
-        it('should add errored test if the retry does not fails', () => {
-            const data = {fullName: 'some name', browserId: 'bro'};
-            const collector = mkCollector_({
-                isFailedTest: sandbox.stub().returns(false)
-            });
-
-            collector.addRetry(data);
-
-            return saveReport_(collector).then((result) => {
-                assert.deepEqual(result, {'some name.bro': {
-                    fullName: 'some name',
-                    browserId: 'bro',
-                    status: 'error',
-                    errorReason: ''
+                    status: 'fail',
+                    errorReason: testError.stack,
+                    retries: [{error: testError.stack}]
                 }});
             });
         });

@@ -106,26 +106,6 @@ describe('collector/tool/hermione', () => {
         });
     });
 
-    describe('isFailedTest', () => {
-        it('should return "true" if test is failed', () => {
-            assert.isTrue(hermioneToolCollector.isFailedTest({state: 'failed'}));
-        });
-
-        it('should return "true" if hook is failed', () => {
-            const result = {hook: {
-                state: 'failed'
-            }};
-
-            assert.isTrue(hermioneToolCollector.isFailedTest(result));
-        });
-
-        it('should return "false" if test and hook are not failed', () => {
-            const result = {hook: {}};
-
-            assert.isFalse(hermioneToolCollector.isFailedTest(result));
-        });
-    });
-
     describe('getSkipReason', () => {
         it('should return default skip reason if "skipReason" is not specified', () => {
             assert.strictEqual(hermioneToolCollector.getSkipReason({}), 'No skip reason');
