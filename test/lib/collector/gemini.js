@@ -167,5 +167,22 @@ describe('collector/gemini', () => {
                 assert.deepEqual(bro.retries, [{error: ''}]);
             });
         });
+
+        it('failed test if images are not equal', () => {
+            const notEqualErrorMessage = 'Images are not equal';
+            const data = {fullName: 'some name', browserId: 'bro', equal: false};
+            const collector = mkGeminiCollector_({
+                isFailedTest: sandbox.stub().returns(true)
+            });
+
+            collector.addRetry(data);
+
+            return saveReport_(collector).then((result) => {
+                const bro = result['some name.bro'];
+                assert.propertyVal(bro, 'status', 'fail');
+                assert.include(bro.errorReason, notEqualErrorMessage);
+                assert.include(bro.retries[0].error, notEqualErrorMessage);
+            });
+        });
     });
 });
