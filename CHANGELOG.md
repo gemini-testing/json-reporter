@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/gemini-testing/json-reporter/compare/v1.2.1...v2.0.0) (2019-01-14)
+
+
+### Features
+
+* save fail message with fail stacktrace ([631de93](https://github.com/gemini-testing/json-reporter/commit/631de93))
+
+
+### BREAKING CHANGES
+
+* new API for errors and fails
+
+
+
 <a name="1.2.1"></a>
 ## [1.2.1](https://github.com/gemini-testing/json-reporter/compare/v1.2.0...v1.2.1) (2019-01-09)
 
