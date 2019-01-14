@@ -147,8 +147,8 @@ describe('collector/gemini', () => {
             return saveReport_(collector).then((result) => {
                 const bro = result['some name.bro'];
                 assert.propertyVal(bro, 'status', 'fail');
-                assert.propertyVal(bro, 'errorReason', testError.stack);
-                assert.deepEqual(bro.retries, [{error: testError.stack}]);
+                assert.deepEqual(bro.errorReason, {message: testError.message, stack: testError.stack});
+                assert.deepEqual(bro.retries, [{message: testError.message, stack: testError.stack}]);
             });
         });
 
@@ -163,8 +163,8 @@ describe('collector/gemini', () => {
             return saveReport_(collector).then((result) => {
                 const bro = result['some name.bro'];
                 assert.propertyVal(bro, 'status', 'error');
-                assert.propertyVal(bro, 'errorReason', '');
-                assert.deepEqual(bro.retries, [{error: ''}]);
+                assert.deepEqual(bro.errorReason, {message: undefined, stack: undefined});
+                assert.deepEqual(bro.retries, [{message: undefined, stack: undefined}]);
             });
         });
 
@@ -180,8 +180,8 @@ describe('collector/gemini', () => {
             return saveReport_(collector).then((result) => {
                 const bro = result['some name.bro'];
                 assert.propertyVal(bro, 'status', 'fail');
-                assert.include(bro.errorReason, notEqualErrorMessage);
-                assert.include(bro.retries[0].error, notEqualErrorMessage);
+                assert.include(bro.errorReason.message, notEqualErrorMessage);
+                assert.include(bro.retries[0].message, notEqualErrorMessage);
             });
         });
     });
