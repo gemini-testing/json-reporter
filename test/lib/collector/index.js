@@ -83,8 +83,8 @@ describe('collector/index', () => {
                     fullName: 'some name',
                     browserId: 'bro',
                     status: 'fail',
-                    errorReason: testError.stack,
-                    retries: [{error: testError.stack}]
+                    errorReason: {message: testError.message, stack: testError.stack},
+                    retries: [{message: testError.message, stack: testError.stack}]
                 }});
             });
         });
@@ -119,8 +119,8 @@ describe('collector/index', () => {
                     fullName: 'some name',
                     browserId: 'bro',
                     status: 'fail',
-                    errorReason: testError.stack,
-                    retries: [{error: testError.stack}]
+                    errorReason: {message: testError.message, stack: testError.stack},
+                    retries: [{message: testError.message, stack: testError.stack}]
                 }});
             });
         });
@@ -132,7 +132,7 @@ describe('collector/index', () => {
             collector.addError(data);
 
             return saveReport_(collector)
-                .then((result) => assert.deepPropertyVal(result['some name.bro'], 'errorReason', 'err-msg'));
+                .then((result) => assert.deepPropertyVal(result['some name.bro'], 'errorReason.message', 'err-msg'));
         });
 
         it('should add errored test with reason from "stack"', () => {
@@ -142,7 +142,7 @@ describe('collector/index', () => {
             collector.addError(data);
 
             return saveReport_(collector)
-                .then((result) => assert.deepPropertyVal(result['some name.bro'], 'errorReason', 'stack-msg'));
+                .then((result) => assert.deepPropertyVal(result['some name.bro'], 'errorReason.stack', 'stack-msg'));
         });
     });
 
