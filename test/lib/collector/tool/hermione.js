@@ -108,7 +108,7 @@ describe('collector/tool/hermione', () => {
 
     describe('getSkipReason', () => {
         it('should return default skip reason if "skipReason" is not specified', () => {
-            assert.strictEqual(hermioneToolCollector.getSkipReason({}), 'No skip reason');
+            assert.strictEqual(hermioneToolCollector.getSkipReason({}, 'No skip reason'), 'No skip reason');
         });
 
         it('should return skip reason from test result', () => {
