@@ -80,11 +80,13 @@ describe('collector/tool/hermione', () => {
 
         it('should return configured result', () => {
             const data = mkDataStub_({
+                title: 'title',
                 browserId: 'bro',
                 fullTitle: () => 'some full title',
                 file: '/cwd/file/path',
                 meta: {url: 'http://some-url/some-path', foo: 'bar'},
-                duration: 12345
+                duration: 12345,
+                parent: mkDataStub_({title: 'some full'})
             });
 
             utils.getRelativePath.withArgs('/cwd/file/path').returns('file/path');
@@ -92,6 +94,7 @@ describe('collector/tool/hermione', () => {
             const result = hermioneToolCollector.configureTestResult(data);
 
             assert.deepEqual(result, {
+                suitePath: ['some full', 'title'],
                 fullName: 'some full title',
                 browserId: 'bro',
                 file: 'file/path',
