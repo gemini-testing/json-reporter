@@ -59,4 +59,15 @@ describe('collector/data-collector/index', () => {
             '': {foo: 'baz', arr: [1, 2]}
         });
     });
+
+    it('should not merge suitePath fields', () => {
+        const dataCollector = DataCollector.create({});
+
+        dataCollector.append({foo: 'bar', arr: [1], suitePath: ['suite', 'path']});
+        dataCollector.append({foo: 'baz', arr: [2], suitePath: ['suite', 'path']});
+
+        assert.deepEqual(dataCollector.getData(), {
+            '': {foo: 'baz', arr: [1, 2], suitePath: ['suite', 'path']}
+        });
+    });
 });
