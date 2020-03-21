@@ -66,9 +66,22 @@ describe('collector/index', () => {
                     'some name.bro': {
                         fullName: 'some name',
                         browserId: 'bro',
-                        status: 'success'
+                        status: 'success',
+                        skipReason: undefined
                     }});
             });
+        });
+
+        it('should add succesfully passed test with skip reason', () => {
+            const data = {fullName: 'some name', browserId: 'bro'};
+            const collector = mkCollector_({
+                getSkipReason: sandbox.stub().returns('some-reason')
+            });
+
+            collector.addSuccess(data);
+
+            return saveReport_(collector)
+                .then((result) => assert.include(result['some name.bro'], {skipReason: 'some-reason'}));
         });
 
         it('should add failed test', () => {
@@ -84,9 +97,22 @@ describe('collector/index', () => {
                     browserId: 'bro',
                     status: 'fail',
                     errorReason: {message: testError.message, stack: testError.stack},
-                    retries: [{message: testError.message, stack: testError.stack}]
+                    retries: [{message: testError.message, stack: testError.stack}],
+                    skipReason: undefined
                 }});
             });
+        });
+
+        it('should add failed test with skip reason', () => {
+            const data = {fullName: 'some name', browserId: 'bro', err: new Promise.OperationalError('test')};
+            const collector = mkCollector_({
+                getSkipReason: sandbox.stub().returns('some-reason')
+            });
+
+            collector.addFail(data);
+
+            return saveReport_(collector)
+                .then((result) => assert.include(result['some name.bro'], {skipReason: 'some-reason'}));
         });
 
         it('should add skipped test', () => {
@@ -120,7 +146,8 @@ describe('collector/index', () => {
                     browserId: 'bro',
                     status: 'fail',
                     errorReason: {message: testError.message, stack: testError.stack},
-                    retries: [{message: testError.message, stack: testError.stack}]
+                    retries: [{message: testError.message, stack: testError.stack}],
+                    skipReason: undefined
                 }});
             });
         });
@@ -143,6 +170,18 @@ describe('collector/index', () => {
 
             return saveReport_(collector)
                 .then((result) => assert.deepPropertyVal(result['some name.bro'], 'errorReason.stack', 'stack-msg'));
+        });
+
+        it('should add errored test with skip reason', () => {
+            const data = {fullName: 'some name', browserId: 'bro'};
+            const collector = mkCollector_({
+                getSkipReason: sandbox.stub().returns('some-reason')
+            });
+
+            collector.addError(data);
+
+            return saveReport_(collector)
+                .then((result) => assert.include(result['some name.bro'], {skipReason: 'some-reason'}));
         });
     });
 
