@@ -126,6 +126,14 @@ describe('json-reporter/hermione', () => {
             assert.calledOnceWith(Collector.prototype.addError, data);
         });
 
+        it('should do nothing for error which occurred without data', () => {
+            sandbox.stub(Collector.prototype, 'addError');
+
+            hermione.emit(hermione.events.ERROR, 'some error');
+
+            assert.notCalled(Collector.prototype.addError);
+        });
+
         it('should save collected test data into file when the tests are completed', () => {
             sandbox.stub(Collector.prototype, 'saveFile');
 
