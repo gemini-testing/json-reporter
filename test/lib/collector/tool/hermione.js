@@ -86,7 +86,8 @@ describe('collector/tool/hermione', () => {
                 file: '/cwd/file/path',
                 meta: {url: 'http://some-url/some-path', foo: 'bar'},
                 duration: 12345,
-                parent: mkDataStub_({title: 'some full'})
+                parent: mkDataStub_({title: 'some full'}),
+                startTime: 1000
             });
 
             utils.getRelativePath.withArgs('/cwd/file/path').returns('file/path');
@@ -100,7 +101,8 @@ describe('collector/tool/hermione', () => {
                 file: 'file/path',
                 url: '/some-path',
                 meta: {url: 'http://some-url/some-path', foo: 'bar'},
-                duration: 12345
+                duration: 12345,
+                startTime: 1000
             });
         });
 
