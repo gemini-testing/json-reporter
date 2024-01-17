@@ -2,7 +2,7 @@
   "name": "json-reporter",
   "version": "2.2.0",
   "description": "Common plugin for gemini and hermione which is intended to aggregate the results of tests running",
-  "main": "gemini.js",
+  "main": "hermione.js",
   "scripts": {
     "lint": "eslint .",
     "test": "npm run lint && npm run test-unit",
@@ -19,10 +19,9 @@
     "url": "https://github.com/gemini-testing/json-reporter/issues"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 18"
   },
   "keywords": [
-    "gemini",
     "hermione",
     "plugin",
     "json-reporter"
