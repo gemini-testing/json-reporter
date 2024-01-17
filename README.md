@@ -5,13 +5,11 @@
 
 Common plugin for:
 
-* [gemini](https://github.com/gemini-testing/gemini)
 * [hermione](https://github.com/gemini-testing/hermione)
 
 which is intended to aggregate the results of tests running.
 
-You can read more about gemini plugins [here](https://github.com/gemini-testing/gemini/blob/master/doc/plugins.md)
-and hermione plugins [here](https://github.com/gemini-testing/hermione#plugins).
+You can read more about hermione plugins [here](https://github.com/gemini-testing/hermione#plugins).
 
 ## Installation
 
@@ -28,23 +26,6 @@ Plugin has following configuration:
 
 Also there is ability to override plugin parameters by CLI options or environment variables
 (see [configparser](https://github.com/gemini-testing/configparser)).
-
-### Gemini usage
-
-Add plugin to your `gemini` config file:
-
-```js
-module.exports = {
-    // ...
-    plugins: {
-        'json-reporter/gemini': {
-            enabled: true,
-            path: 'my/custom/report.json'
-        }
-    },
-    //...
-}
-```
 
 ### Hermione usage
 
