@@ -73,7 +73,7 @@ describe('collector/index', () => {
 
         it('should add failed test', () => {
             const testError = new Promise.OperationalError('test');
-            const data = {fullName: 'some name', browserId: 'bro', err: testError};
+            const data = {fullName: 'some name', browserId: 'bro', err: testError, startTime: 1000, duration: 500};
             const collector = mkCollector_();
 
             collector.addFail(data);
@@ -83,8 +83,15 @@ describe('collector/index', () => {
                     fullName: 'some name',
                     browserId: 'bro',
                     status: 'fail',
+                    startTime: data.startTime,
+                    duration: data.duration,
                     errorReason: {message: testError.message, stack: testError.stack},
-                    retries: [{message: testError.message, stack: testError.stack}]
+                    retries: [{
+                        message: testError.message,
+                        stack: testError.stack,
+                        startTime: data.startTime,
+                        duration: data.duration
+                    }]
                 }});
             });
         });
@@ -109,7 +116,7 @@ describe('collector/index', () => {
 
         it('should add failed test if the retry fails', () => {
             const testError = new Promise.OperationalError('test');
-            const data = {fullName: 'some name', browserId: 'bro', err: testError};
+            const data = {fullName: 'some name', browserId: 'bro', err: testError, startTime: 1000, duration: 500};
             const collector = mkCollector_();
 
             collector.addRetry(data);
@@ -120,7 +127,14 @@ describe('collector/index', () => {
                     browserId: 'bro',
                     status: 'fail',
                     errorReason: {message: testError.message, stack: testError.stack},
-                    retries: [{message: testError.message, stack: testError.stack}]
+                    startTime: data.startTime,
+                    duration: data.duration,
+                    retries: [{
+                        message: testError.message,
+                        stack: testError.stack,
+                        startTime: data.startTime,
+                        duration: data.duration
+                    }]
                 }});
             });
         });
