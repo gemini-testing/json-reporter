@@ -5,11 +5,12 @@
 
 Common plugin for:
 
-* [hermione](https://github.com/gemini-testing/hermione)
+* [testplane](https://github.com/gemini-testing/testplane)
+* [hermione](https://github.com/gemini-testing/testplane/tree/hermione)
 
 which is intended to aggregate the results of tests running.
 
-You can read more about hermione plugins [here](https://github.com/gemini-testing/hermione#plugins).
+You can read more about testplane plugins [here](https://github.com/gemini-testing/testplane/blob/master/docs/config.md#plugins).
 
 ## Installation
 
@@ -26,6 +27,23 @@ Plugin has following configuration:
 
 Also there is ability to override plugin parameters by CLI options or environment variables
 (see [configparser](https://github.com/gemini-testing/configparser)).
+
+### Testplane usage
+
+Add plugin to your `testplane` config file:
+
+```ts
+export default {
+    // ...
+    plugins: {
+        'json-reporter/testplane': {
+            enabled: true,
+            path: 'my/custom/report.json'
+        }
+    },
+    //...
+}
+```
 
 ### Hermione usage
 

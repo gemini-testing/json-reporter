@@ -5,15 +5,15 @@ const EventEmitter = require('events').EventEmitter;
 const proxyquire = require('proxyquire');
 
 const Collector = require('../lib/collector');
-const hermioneToolCollector = require('../lib/collector/tool/hermione');
+const toolCollector = require('../lib/collector/tool/testplane');
 
-describe('json-reporter/hermione', () => {
+describe('json-reporter/plugin', () => {
     const sandbox = sinon.sandbox.create();
 
-    let hermione;
+    let testplane;
     let parseConfig;
 
-    const mkHermione_ = () => {
+    const mkTestplane_ = () => {
         const emitter = new EventEmitter();
 
         emitter.events = {
@@ -38,15 +38,15 @@ describe('json-reporter/hermione', () => {
 
         parseConfig = sandbox.stub().returns(opts);
 
-        const hermioneReporter = proxyquire('../hermione', {
+        const reporter = proxyquire('../plugin', {
             './lib/config': parseConfig
         });
 
-        return hermioneReporter(hermione, opts);
+        return reporter(testplane, opts);
     };
 
     beforeEach(() => {
-        hermione = mkHermione_();
+        testplane = mkTestplane_();
     });
 
     afterEach(() => sandbox.restore());
@@ -73,7 +73,7 @@ describe('json-reporter/hermione', () => {
 
         assert.calledWith(
             Collector.create,
-            hermioneToolCollector,
+            toolCollector,
             {enabled: true, path: '/some/path'}
         );
     });
@@ -85,7 +85,7 @@ describe('json-reporter/hermione', () => {
             const data = {foo: 'bar'};
             sandbox.stub(Collector.prototype, 'addSuccess');
 
-            hermione.emit(hermione.events.TEST_PASS, data);
+            testplane.emit(testplane.events.TEST_PASS, data);
 
             assert.calledOnceWith(Collector.prototype.addSuccess, data);
         });
@@ -94,7 +94,7 @@ describe('json-reporter/hermione', () => {
             const data = {foo: 'bar'};
             sandbox.stub(Collector.prototype, 'addFail');
 
-            hermione.emit(hermione.events.TEST_FAIL, data);
+            testplane.emit(testplane.events.TEST_FAIL, data);
 
             assert.calledOnceWith(Collector.prototype.addFail, data);
         });
@@ -103,7 +103,7 @@ describe('json-reporter/hermione', () => {
             const data = {foo: 'bar'};
             sandbox.stub(Collector.prototype, 'addSkipped');
 
-            hermione.emit(hermione.events.TEST_PENDING, data);
+            testplane.emit(testplane.events.TEST_PENDING, data);
 
             assert.calledOnceWith(Collector.prototype.addSkipped, data);
         });
@@ -112,7 +112,7 @@ describe('json-reporter/hermione', () => {
             const data = {foo: 'bar'};
             sandbox.stub(Collector.prototype, 'addRetry');
 
-            hermione.emit(hermione.events.RETRY, data);
+            testplane.emit(testplane.events.RETRY, data);
 
             assert.calledOnceWith(Collector.prototype.addRetry, data);
         });
@@ -121,7 +121,7 @@ describe('json-reporter/hermione', () => {
             const data = {foo: 'bar'};
             sandbox.stub(Collector.prototype, 'addError');
 
-            hermione.emit(hermione.events.ERROR, 'some error', data);
+            testplane.emit(testplane.events.ERROR, 'some error', data);
 
             assert.calledOnceWith(Collector.prototype.addError, data);
         });
@@ -129,7 +129,7 @@ describe('json-reporter/hermione', () => {
         it('should do nothing for error which occurred without data', () => {
             sandbox.stub(Collector.prototype, 'addError');
 
-            hermione.emit(hermione.events.ERROR, 'some error');
+            testplane.emit(testplane.events.ERROR, 'some error');
 
             assert.notCalled(Collector.prototype.addError);
         });
@@ -137,7 +137,7 @@ describe('json-reporter/hermione', () => {
         it('should save collected test data into file when the tests are completed', () => {
             sandbox.stub(Collector.prototype, 'saveFile');
 
-            hermione.emit(hermione.events.RUNNER_END);
+            testplane.emit(testplane.events.RUNNER_END);
 
             assert.calledOnce(Collector.prototype.saveFile);
         });
