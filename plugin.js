@@ -7,6 +7,8 @@ const parseConfig = require('./lib/config');
 module.exports = (testplane, opts) => {
     const config = parseConfig(opts);
 
+    Object.assign(opts, config);
+
     if (!config.enabled) {
         return;
     }
