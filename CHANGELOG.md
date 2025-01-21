@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.1.1"></a>
+## [3.1.1](https://github.com/gemini-testing/json-reporter/compare/v3.1.0...v3.1.1) (2025-01-21)
+
+
+### Bug Fixes
+
+* populate plugin parsed config to testplane config ([43c52c6](https://github.com/gemini-testing/json-reporter/commit/43c52c6))
+
+
+
 <a name="3.1.0"></a>
 # [3.1.0](https://github.com/gemini-testing/json-reporter/compare/v3.0.0...v3.1.0) (2024-04-22)
 
