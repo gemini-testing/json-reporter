@@ -86,12 +86,7 @@ describe('collector/index', () => {
                     startTime: data.startTime,
                     duration: data.duration,
                     errorReason: {message: testError.message, stack: testError.stack},
-                    retries: [{
-                        message: testError.message,
-                        stack: testError.stack,
-                        startTime: data.startTime,
-                        duration: data.duration
-                    }]
+                    retries: []
                 }});
             });
         });
@@ -110,6 +105,34 @@ describe('collector/index', () => {
                     browserId: 'bro',
                     status: 'skipped',
                     skipReason: 'some-reason'
+                }});
+            });
+        });
+
+        it('should save one retry for test that failed after one retry', () => {
+            const testRetryError = new Promise.OperationalError('test retry');
+            const testFailError = new Promise.OperationalError('test fail');
+            const dataRetry = {fullName: 'some name', browserId: 'bro', err: testRetryError, startTime: 1000, duration: 500};
+            const dataFail = {fullName: 'some name', browserId: 'bro', err: testFailError, startTime: 1000, duration: 500};
+            const collector = mkCollector_();
+
+            collector.addRetry(dataRetry);
+            collector.addFail(dataFail);
+
+            return saveReport_(collector).then((result) => {
+                assert.deepEqual(result, {'some name.bro': {
+                    fullName: 'some name',
+                    browserId: 'bro',
+                    status: 'fail',
+                    errorReason: {message: testFailError.message, stack: testFailError.stack},
+                    startTime: dataFail.startTime,
+                    duration: dataFail.duration,
+                    retries: [{
+                        message: testRetryError.message,
+                        stack: testRetryError.stack,
+                        startTime: dataRetry.startTime,
+                        duration: dataRetry.duration
+                    }]
                 }});
             });
         });
