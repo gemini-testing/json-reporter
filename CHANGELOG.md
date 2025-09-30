@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.1.2"></a>
+## [3.1.2](https://github.com/gemini-testing/json-reporter/compare/v3.1.1...v3.1.2) (2025-09-30)
+
+
+### Bug Fixes
+
+* fix addRetry method ([#32](https://github.com/gemini-testing/json-reporter/issues/32)) ([21f7b8d](https://github.com/gemini-testing/json-reporter/commit/21f7b8d))
+
+
+
 <a name="3.1.1"></a>
 ## [3.1.1](https://github.com/gemini-testing/json-reporter/compare/v3.1.0...v3.1.1) (2025-01-21)
 
