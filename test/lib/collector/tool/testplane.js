@@ -109,6 +109,67 @@ describe('collector/tool/testplane', () => {
         it('should not throw an error if test has no parent', () => {
             assert.doesNotThrow(() => toolCollector.configureTestResult(mkDataStub_()));
         });
+
+        it('should not add history if includeHistory is not enabled', () => {
+            const testSteps = [
+                {n: 'click', a: ['.button'], ts: 1000, te: 1050, d: 50, s: 'b', c: [], o: false, g: false, f: false}
+            ];
+            const data = mkDataStub_({
+                history: testSteps
+            });
+
+            const result = toolCollector.configureTestResult(data, {includeHistory: false});
+
+            assert.notProperty(result, 'history');
+        });
+
+        it('should add history if includeHistory is enabled and history exists', () => {
+            const testSteps = [
+                {
+                    n: 'click',
+                    a: ['.button'],
+                    ts: 1000,
+                    te: 1050,
+                    d: 50,
+                    s: 'b',
+                    c: [
+                        {n: 'wait', a: [], ts: 1005, te: 1045, d: 40, s: 'b', c: [], o: false, g: false, f: false}
+                    ],
+                    o: false,
+                    g: true,
+                    f: false
+                },
+                {
+                    n: 'type',
+                    a: ['.input', 'text'],
+                    ts: 1100,
+                    te: 1150,
+                    d: 50,
+                    s: 'e',
+                    c: [],
+                    o: false,
+                    g: false,
+                    f: false
+                }
+            ];
+            const data = mkDataStub_({
+                history: testSteps
+            });
+
+            const result = toolCollector.configureTestResult(data, {includeHistory: true});
+
+            assert.propertyVal(result, 'history', testSteps);
+            assert.isArray(result.history);
+        });
+
+        it('should not add history if includeHistory is enabled but history does not exist', () => {
+            // @note history is not available for skipped tests and may be undefined
+            const data = mkDataStub_();
+
+            const result = toolCollector.configureTestResult(data, {includeHistory: true});
+
+            assert.notProperty(result, 'history');
+        });
     });
 
     describe('getSkipReason', () => {
