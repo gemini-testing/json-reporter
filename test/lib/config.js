@@ -12,6 +12,7 @@ describe('config', () => {
 
         delete process.env['json_reporter_enabled'];
         delete process.env['json_reporter_path'];
+        delete process.env['json_reporter_include_history'];
     });
 
     describe('enabled', () => {
@@ -59,6 +60,30 @@ describe('config', () => {
             process.env['json_reporter_path'] = 'env/path/report.json';
 
             assert.equal(parseConfig({}).path, 'env/path/report.json');
+        });
+    });
+
+    describe('includeHistory', () => {
+        it('should be disabled by default', () => {
+            assert.isFalse(parseConfig({}).includeHistory);
+        });
+
+        it('should enable by configuration file', () => {
+            const config = parseConfig({includeHistory: true});
+
+            assert.isTrue(config.includeHistory);
+        });
+
+        it('should enable by cli', () => {
+            process.argv = process.argv.concat('--json-reporter-include-history', 'true');
+
+            assert.isTrue(parseConfig({}).includeHistory);
+        });
+
+        it('should enable by environment variable', () => {
+            process.env['json_reporter_include_history'] = 'true';
+
+            assert.isTrue(parseConfig({}).includeHistory);
         });
     });
 });
