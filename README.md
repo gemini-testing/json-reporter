@@ -24,6 +24,7 @@ Plugin has following configuration:
 
 * **enabled** (optional) `Boolean` – enable/disable the plugin; by default plugin is enabled
 * **path** (optional) `String` - path for saving json report file; by default json report will be saved into `json-reporter.json` inside current work directory.
+* **includeHistory** (optional) `Boolean` – include test execution history in the json report; by default history is not included. Note: history is not available for skipped tests and may be undefined.
 
 Also there is ability to override plugin parameters by CLI options or environment variables
 (see [configparser](https://github.com/gemini-testing/configparser)).
@@ -38,7 +39,8 @@ export default {
     plugins: {
         'json-reporter/testplane': {
             enabled: true,
-            path: 'my/custom/report.json'
+            path: 'my/custom/report.json',
+            includeHistory: true
         }
     },
     //...
@@ -55,7 +57,8 @@ module.exports = {
     plugins: {
         'json-reporter/hermione': {
             enabled: true,
-            path: 'my/custom/report.json'
+            path: 'my/custom/report.json',
+            includeHistory: true
         }
     },
     //...
