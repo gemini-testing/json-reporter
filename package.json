@@ -1,6 +1,6 @@
 {
   "name": "json-reporter",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "description": "Common plugin for testplane and hermione which is intended to aggregate the results of tests running",
   "main": "plugin.js",
   "scripts": {
